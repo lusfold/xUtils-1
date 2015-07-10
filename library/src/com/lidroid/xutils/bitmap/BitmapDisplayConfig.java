@@ -18,6 +18,7 @@ package com.lidroid.xutils.bitmap;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.animation.Animation;
+
 import com.lidroid.xutils.bitmap.core.BitmapSize;
 import com.lidroid.xutils.bitmap.factory.BitmapFactory;
 import com.lidroid.xutils.task.Priority;
@@ -32,6 +33,7 @@ public class BitmapDisplayConfig {
     private boolean showOriginal = false;
     private Bitmap.Config bitmapConfig = Bitmap.Config.RGB_565;
     private BitmapFactory bitmapFactory;
+    private BitmapLoadStrategy bitmapLoadStrategy = BitmapLoadStrategy.DEFAULT;
 
     private Priority priority;
 
@@ -100,6 +102,14 @@ public class BitmapDisplayConfig {
 
     public void setBitmapFactory(BitmapFactory bitmapFactory) {
         this.bitmapFactory = bitmapFactory;
+    }
+
+    public BitmapLoadStrategy getBitmapLoadStrategy() {
+        return bitmapLoadStrategy;
+    }
+
+    public void setBitmapLoadStrategy(BitmapLoadStrategy bitmapLoadStrategy) {
+        this.bitmapLoadStrategy = bitmapLoadStrategy;
     }
 
     public Priority getPriority() {

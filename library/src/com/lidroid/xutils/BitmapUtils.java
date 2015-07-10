@@ -22,10 +22,12 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
+
 import com.lidroid.xutils.bitmap.BitmapCacheListener;
 import com.lidroid.xutils.bitmap.BitmapCommonUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.BitmapGlobalConfig;
+import com.lidroid.xutils.bitmap.BitmapLoadStrategy;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadCallBack;
 import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.lidroid.xutils.bitmap.callback.DefaultBitmapLoadCallBack;
@@ -240,8 +242,12 @@ public class BitmapUtils implements TaskHandler {
         // start loading
         callBack.onPreLoad(container, uri, displayConfig);
 
-        // find bitmap from mem cache.
-        Bitmap bitmap = globalConfig.getBitmapCache().getBitmapFromMemCache(uri, displayConfig);
+        // find bitmap from mem cache if bitmapLoadStrategy is not NET_ONLY.
+        Bitmap bitmap = null;
+        BitmapLoadStrategy bitmapLoadStrategy = displayConfig.getBitmapLoadStrategy();
+        if (bitmapLoadStrategy != BitmapLoadStrategy.NET_ONLY) {
+            bitmap = globalConfig.getBitmapCache().getBitmapFromMemCache(uri, displayConfig);
+        }
 
         if (bitmap != null) {
             callBack.onLoadStarted(container, uri, displayConfig);
@@ -251,6 +257,10 @@ public class BitmapUtils implements TaskHandler {
                     bitmap,
                     displayConfig,
                     BitmapLoadFrom.MEMORY_CACHE);
+        } else if (bitmapLoadStrategy == BitmapLoadStrategy.CACHE_ONLY) {
+
+            callBack.onLoadFailed(container, uri, displayConfig.getLoadFailedDrawable());
+            
         } else if (!bitmapLoadTaskExist(container, uri, callBack)) {
 
             final BitmapLoadTask<T> loadTask = new BitmapLoadTask<T>(container, uri, displayConfig, callBack);
